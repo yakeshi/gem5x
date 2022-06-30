@@ -1,0 +1,15 @@
+Import('*')
+
+if 'BUILD_EXTENSION' in ARGUMENTS:
+    tags = None
+    add_tags = 'IP core'
+else:
+    tags = 'IP core'
+    add_tags = None
+
+SimObject('rng.py', sim_objects=['RandomNumberGenerator'],
+        tags=tags, add_tags=add_tags)
+
+Source('rng.cc', tags='IP core')
+DebugFlag('IPCoreRng', 'IP RNG Core entropy source device ',
+        tags=tags, add_tags=add_tags)

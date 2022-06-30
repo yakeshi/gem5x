@@ -1,0 +1,48 @@
+Import('*')
+
+def add_linkflag(env):
+    gem5_libflag = ' ' + env['LIBLINKPREFIX'] + 'gem5_' + env['ENV_LABEL']
+    png_libflag = ' ' + env['LIBLINKPREFIX'] + 'png'
+    env['SHLINKCOM'] = env['SHLINKCOM'] + gem5_libflag
+    env["LINKCOM"] = env["LINKCOM"] + gem5_libflag  + png_libflag
+    env.Append(LIBPATH=[Dir(env['BUILDDIR'])])
+
+class SharedLib(Executable.__base__):
+    '''Workaround for gem5 SConscript not export SharedLib.'''
+
+    def srcs_to_objs(self, env, sources):
+        return list([ s.shared(env) for s in sources ])
+
+    def declare(self, env):
+        env = env.Clone()
+        add_linkflag(env)
+        env['SHLIBPREFIX'] = ''
+        objs = self.srcs_to_objs(env, self.sources(env))
+
+        return env.SharedLibrary(self.target, objs)[0]
+
+date_source = File('../base/date.cc')
+
+class Gem5X(Executable):
+    """gem5 linked with shared libraries."""
+
+    def path(self, env):
+        self.dir = Dir(env['BUILDDIR'])
+        return self.dir.File(self.target + '.${ENV_LABEL}')
+
+    def declare(self, env):
+        env = env.Clone()
+        add_linkflag(env)
+        objs = self.srcs_to_objs(env, self.sources(env))
+
+        date_obj = env.StaticObject(date_source)
+        env.Depends(date_obj, objs)
+        objs.append(date_obj)
+
+        return super().declare(env, objs)
+
+ipcore = env.File('ipcore.cc')
+pybind_init = env.File('init.cc')
+lib_name = 'ipcore_${ENV_LABEL}'
+SharedLib(lib_name, ipcore, pybind_init, with_any_tags('IP core'))
+Gem5X('gem5x', with_any_tags('main'))
