@@ -41,8 +41,8 @@ class Gem5X(Executable):
 
         return super().declare(env, objs)
 
-ipcore = env.File('ipcore.cc')
+cores = env.File('cores.cc')
 pybind_init = env.File('init.cc')
-lib_name = 'ipcore_${ENV_LABEL}'
-SharedLib(lib_name, ipcore, pybind_init, with_any_tags('IP core'))
+lib_name = 'cores_${ENV_LABEL}'
+SharedLib(lib_name, cores, pybind_init, with_any_tags('IP core'))
 Gem5X('gem5x', with_any_tags('main'))

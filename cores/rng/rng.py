@@ -3,7 +3,7 @@ from m5.objects.Device import BasicPioDevice
 
 class RandomNumberGenerator(BasicPioDevice):
     type = 'RandomNumberGenerator'
-    cxx_header = 'ip_cores/rng/rng.hh'
+    cxx_header = 'cores/rng/rng.hh'
     cxx_class = 'gem5::RandomNumberGenerator'
 
     entropy_source = Param.String("/dev/random", "The source of entropy")

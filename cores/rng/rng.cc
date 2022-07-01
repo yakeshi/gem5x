@@ -1,4 +1,4 @@
-#include "ip_cores/rng/rng.hh"
+#include "cores/rng/rng.hh"
 
 #include <fcntl.h>
 #include <unistd.h>

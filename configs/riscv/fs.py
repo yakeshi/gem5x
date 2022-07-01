@@ -49,7 +49,7 @@ def addOptions(parser):
     parser.add_argument("--cpu-type", type=str, choices=list(cpu_types.keys()),
                         default="timing",
                         help="CPU simulation mode. Default: %(default)s")
-    parser.add_argument("--cores", action="store_true", default=False,
+    parser.add_argument("--with-cores", action="store_true", default=False,
                         help="Import external hardware IP cores")
     return parser
 
@@ -73,7 +73,7 @@ def instantiate(options):
         memory=memory,
         cache_hierarchy=cache_hierarchy)
 
-    if options.cores:
+    if options.with_cores:
         try:
             import cores
         except:
@@ -106,7 +106,7 @@ def instantiate(options):
     # Set the Full System workload.
     board.set_kernel_disk_workload(kernel=kernel, disk_image=disk)
 
-    if options.cores:
+    if options.with_cores:
         # Append extra_rng to dts
         new_fdt = Fdt()
         outdir = m5.options.outdir

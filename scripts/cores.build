@@ -1,0 +1,9 @@
+#!/bin/sh
+
+TOP=$(dirname "$(dirname "$(readlink -f "$0")")")
+GEM5_SRC_DIR="$TOP/gem5"
+CORES_SRC_DIR="$TOP/cores"
+
+cd "$GEM5_SRC_DIR" || exit -1
+scons EXTRAS="$CORES_SRC_DIR"  BUILD_EXTENSION=1 build/riscv/cores_opt.so
+mv build/riscv/cores_opt.so build/riscv/cores.so

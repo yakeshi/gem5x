@@ -1,0 +1,36 @@
+#!/bin/sh
+
+TOP=$(dirname "$(dirname "$(readlink -f "$0")")")
+RISCV_BUILD="$TOP/gem5/build/riscv"
+GEM5X="$RISCV_BUILD/gem5x.opt"
+RISCV_FS_CFG="$TOP/configs/riscv/fs.py"
+EXTRA_OPTION=''
+
+while getopts ":r:" OPT; do
+        case $OPT in
+        r)
+                EXTRA_OPTION="--restore-from $OPTARG"
+                ;;
+        *)
+                echo "Usage: $(basename $0) [-r <dir>] [-K]"
+                echo "  -r <dir>   restore from checkpoint file in <dir>"
+                exit 1
+                ;;
+        esac
+done
+
+export M5_PATH="$TOP/riscv_dist"
+
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH="$RISCV_BUILD"
+else
+    case "$LD_LIBRARY_PATH" in
+        *"$RISCV_BUILD"*)
+            ;;
+        *)
+            export LD_LIBRARY_PATH="$RISCV_BUILD":$LD_LIBRARY_PATH
+            ;;
+    esac
+fi
+
+"$GEM5X" "$RISCV_FS_CFG" --kernel riscv-bootloader-vmlinux-5.10 --disk riscv-disk-img --with-cores $EXTRA_OPTION
