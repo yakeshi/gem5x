@@ -12,7 +12,7 @@ while getopts ":r:" OPT; do
                 EXTRA_OPTION="--restore-from $OPTARG"
                 ;;
         *)
-                echo "Usage: $(basename $0) [-r <dir>] [-K]"
+                echo "Usage: $(basename $0) [-r <dir>]"
                 echo "  -r <dir>   restore from checkpoint file in <dir>"
                 exit 1
                 ;;
